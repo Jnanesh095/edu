@@ -1,0 +1,498 @@
+/* --- App Container --- */
+.app {
+  min-height: 100vh;
+  background-image: var(--app-bg);
+  color: var(--app-text);
+  padding: 2rem;
+  transition: background-color 0.5s, color 0.5s;
+}
+
+/* Applying space-y-6 equivalent for ResourceLibrary */
+.app > header + * {
+  margin-top: 1.5rem;
+}
+.app > .filter-bar + * {
+  margin-top: 1.5rem;
+}
+.app > .edit-form + * {
+  margin-top: 1.5rem;
+}
+.app > .resource-grid + * {
+  margin-top: 1.5rem;
+}
+
+/* --- NEW: Login Page --- */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 4rem); /* Full height minus app padding */
+}
+
+.login-form {
+  background-color: var(--card-bg);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form__title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-indigo-700);
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+html.dark .login-form__title {
+  color: var(--color-indigo-400);
+}
+
+.login-form__group {
+  margin-bottom: 1.25rem;
+}
+
+.login-form__group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.login-form__input {
+  width: 100%;
+  border: 1px solid var(--color-gray-200);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  font-size: 1rem;
+}
+
+.login-form__input:focus {
+  outline: none;
+  border-color: var(--color-indigo-400);
+  box-shadow: var(--ring-shadow);
+}
+
+.login-form__error {
+  color: #ef4444; /* red-500 */
+  font-size: 0.875rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+
+/* --- Header --- */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--header-bg);
+  padding: 1rem;
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: var(--shadow-md);
+}
+
+.app-header__title {
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 800; /* font-extrabold */
+  color: var(--color-indigo-700);
+  letter-spacing: -0.025em; /* tracking-wide */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* drop-shadow-sm */
+}
+
+html.dark .app-header__title {
+  color: var(--color-indigo-400);
+}
+
+.app-header__controls {
+  display: flex;
+  gap: 0.75rem; /* gap-3 */
+  align-items: center;
+}
+
+/* --- Filter Bar --- */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--header-bg);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-md);
+}
+
+.filter-bar__search,
+.filter-bar__select {
+  border: 1px solid var(--color-gray-200);
+  padding: 0.5rem;
+  border-radius: 0.5rem; /* rounded-lg */
+  background-color: var(--input-bg);
+  color: var(--input-text);
+}
+
+.filter-bar__search {
+  flex-grow: 1; /* flex-1 */
+}
+
+.filter-bar__search:focus,
+.filter-bar__select:focus {
+  outline: none;
+  border-color: var(--color-indigo-400);
+  box-shadow: var(--ring-shadow);
+}
+
+/* --- Edit Form --- */
+.edit-form {
+  border: 1px solid var(--color-gray-200);
+  border-radius: 1rem; /* rounded-2xl */
+  padding: 1.25rem; /* p-5 */
+  background-color: var(--card-bg);
+  box-shadow: var(--shadow-xl);
+}
+
+.edit-form__title {
+  font-weight: 700;
+  font-size: 1.125rem; /* text-lg */
+  color: var(--color-indigo-700);
+  margin-bottom: 0.5rem;
+}
+
+html.dark .edit-form__title {
+  color: var(--color-indigo-400);
+}
+
+.edit-form__input,
+.edit-form__textarea {
+  border: 1px solid var(--color-gray-200);
+  padding: 0.5rem;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+}
+
+.edit-form__input:focus,
+.edit-form__textarea:focus {
+  outline: none;
+  border-color: var(--color-indigo-400);
+  box-shadow: var(--ring-shadow);
+}
+
+.edit-form__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+/* --- Resource Grid --- */
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem; /* gap-6 */
+}
+
+/* Responsive columns */
+@media (min-width: 768px) { /* md: */
+  .resource-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) { /* lg: */
+  .resource-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* --- Resource Card --- */
+.resource-card {
+  border: 1px solid var(--color-gray-200);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-lg);
+  background-image: var(--card-bg);
+  transition: transform 0.3s, box-shadow 0.3s;
+  /* Flex column to push actions to the bottom */
+  display: flex;
+  flex-direction: column;
+}
+
+.resource-card:hover {
+  box-shadow: var(--shadow-2xl);
+  transform: translateY(-4px);
+}
+
+.resource-card__title {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--color-indigo-700);
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+html.dark .resource-card__title {
+    color: var(--color-indigo-400);
+}
+
+.resource-card__description {
+  font-size: 0.875rem; /* text-sm */
+  color: var(--color-gray-700);
+  font-style: italic;
+  margin: 0;
+}
+
+html.dark .resource-card__description {
+  color: var(--color-gray-300);
+}
+
+.resource-card__meta {
+  margin-top: 0.75rem;
+  font-size: 0.75rem; /* text-xs */
+  color: var(--color-gray-600);
+}
+
+html.dark .resource-card__meta {
+  color: var(--color-gray-400);
+}
+
+.resource-card__meta p {
+  margin: 0.25rem 0; /* space-y-1 */
+}
+
+.resource-card__reviews {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  background-color: rgba(209, 213, 219, 0.2); /* bg-gray-50 (light) */
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border-top: 1px solid var(--color-gray-200);
+}
+
+html.dark .resource-card__reviews {
+  background-color: rgba(55, 65, 81, 0.3); /* dark equivalent */
+  border-top-color: var(--color-gray-700);
+}
+
+.resource-card__reviews-title {
+  font-weight: 600;
+  color: var(--color-indigo-600);
+  margin: 0;
+}
+
+html.dark .resource-card__reviews-title {
+  color: var(--color-indigo-400);
+}
+
+.resource-card__review-item {
+  border-top: 1px solid var(--color-gray-200);
+  padding-top: 0.25rem;
+  margin-top: 0.25rem;
+  color: var(--color-gray-800);
+}
+
+html.dark .resource-card__review-item {
+    border-top-color: var(--color-gray-600);
+    color: var(--color-gray-200);
+}
+
+.resource-card__review-rating {
+  color: #f59e0b; /* text-yellow-500 */
+}
+
+.resource-card__no-reviews {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+}
+
+/* --- Review Adder --- */
+.resource-card__review-adder {
+  margin-top: 1rem;
+}
+
+.review-form {
+  border: 1px solid var(--color-gray-200);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  background-color: var(--header-bg); /* Use same as header */
+}
+
+html.dark .review-form {
+  border-color: var(--color-gray-700);
+}
+
+.review-form__title {
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: var(--color-indigo-700);
+}
+
+html.dark .review-form__title {
+  color: var(--color-indigo-400);
+}
+
+.review-form__group {
+  margin-bottom: 0.75rem;
+}
+
+.review-form__group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.review-form__input,
+.review-form__textarea {
+  width: 100%;
+  border: 1px solid var(--color-gray-200);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  font-size: 0.875rem;
+}
+
+.review-form__input:focus,
+.review-form__textarea:focus {
+  outline: none;
+  border-color: var(--color-indigo-400);
+  box-shadow: var(--ring-shadow);
+}
+
+.review-form__actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+
+/* --- Actions Bar --- */
+.resource-card__actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  /* Pushes this to the bottom of the flex-column card */
+  margin-top: auto; 
+  padding-top: 1rem; /* Add padding to separate from content above */
+}
+
+/* --- Footer --- */
+.app-footer {
+  text-align: center;
+  margin-top: 2.5rem;
+  font-size: 0.875rem;
+  color: var(--footer-text);
+}
+
+
+/* --- Generic Button Styles --- */
+.btn {
+  padding: 0.25rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-md);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* Button Variants */
+.btn--toggle-dark {
+  background-color: var(--toggle-dark-bg);
+  color: var(--toggle-dark-text);
+  padding: 0.25rem 0.75rem; /* px-3 py-1 */
+}
+
+/* --- NEW: Logout Button (Replaces toggle-admin) --- */
+.btn--logout {
+  background-color: var(--color-indigo-600);
+  padding: 0.5rem 1rem; /* px-4 py-2 */
+}
+
+.btn--logout:hover {
+  background-color: var(--color-indigo-700);
+}
+
+/* --- NEW: Login Button --- */
+.btn--login {
+  background-color: var(--color-indigo-600);
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.btn--login:hover {
+  background-color: var(--color-indigo-700);
+}
+
+.btn--download {
+  background-color: #0ea5e9; /* bg-sky-500 */
+}
+.btn--download:hover {
+  background-color: #0284c7; /* hover:bg-sky-600 */
+}
+
+.btn--add-review {
+  background-color: transparent;
+  color: var(--color-indigo-600);
+  border: 1px solid var(--color-indigo-600);
+  box-shadow: none;
+  font-weight: 600;
+}
+.btn--add-review:hover {
+  background-color: rgba(79, 70, 229, 0.1); /* light indigo bg */
+  transform: none; /* No scale */
+}
+html.dark .btn--add-review {
+  color: var(--color-indigo-400);
+  border-color: var(--color-indigo-400);
+}
+html.dark .btn--add-review:hover {
+  background-color: rgba(129, 140, 248, 0.1);
+}
+
+
+.btn--edit {
+  background-color: #3b82f6; /* bg-blue-600 */
+}
+.btn--edit:hover {
+  background-color: #2563eb; /* hover:bg-blue-700 */
+}
+
+.btn--delete {
+  background-color: #ef4444; /* bg-red-600 */
+}
+.btn--delete:hover {
+  background-color: #dc2626; /* hover:bg-red-700 */
+}
+
+.btn--save {
+  background-color: #22c55e; /* bg-green-500 */
+}
+.btn--save:hover {
+  background-color: #16a34a; /* hover:bg-green-600 */
+}
+
+.btn--cancel {
+  background-color: #9ca3af; /* bg-gray-400 */
+}
+.btn--cancel:hover {
+  background-color: #6b7280; /* hover:bg-gray-500 */
+}

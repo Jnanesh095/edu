@@ -1,0 +1,88 @@
+/* --- Global Setup & Font --- */
+:root {
+  /* Colors */
+  --color-indigo-100: #e0e7ff;
+  --color-indigo-400: #818cf8;
+  --color-indigo-600: #4f46e5;
+  --color-indigo-700: #4338ca;
+  --color-blue-200: #bfdbfe;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Shadows */
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  /* Ring (for focus) */
+  --ring-shadow: 0 0 0 2px var(--color-indigo-400);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Dark Mode --- */
+/* The 'dark' class is applied to the <html> tag by the useEffect hook.
+  This allows us to use simple descendant selectors.
+*/
+
+/* Light Mode Defaults */
+html {
+  --app-bg: linear-gradient(to bottom right, var(--color-indigo-100), var(--color-blue-200));
+  --app-text: var(--color-gray-900);
+  --card-bg: linear-gradient(to bottom right, var(--color-white), var(--color-gray-100));
+  --header-bg: var(--color-white);
+  --input-bg: var(--color-white);
+  --input-text: var(--color-gray-900);
+  --footer-text: var(--color-gray-600);
+  --toggle-dark-bg: var(--color-gray-200);
+  --toggle-dark-text: var(--color-gray-800);
+}
+
+/* Dark Mode Overrides */
+html.dark {
+  --app-bg: var(--color-gray-900);
+  --app-text: var(--color-gray-100);
+  --card-bg: var(--color-gray-800);
+  --header-bg: var(--color-gray-800);
+  --input-bg: var(--color-gray-700);
+  --input-text: var(--color-gray-100);
+  --footer-text: var(--color-gray-400);
+  --toggle-dark-bg: var(--color-gray-700);
+  --toggle-dark-text: var(--color-gray-100);
+}
+
+/* --- Keyframes --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
