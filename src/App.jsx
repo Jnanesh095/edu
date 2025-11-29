@@ -48,30 +48,40 @@ function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [remember, setRemember] = useState(false);
+
   // CAPTCHA state
   const [captcha, setCaptcha] = useState("");
   const [captchaInput, setCaptchaInput] = useState("");
 
-  // Generate a random 5-letter CAPTCHA code
   useEffect(() => {
+    // load remembered username
+    const remembered = localStorage.getItem('edulibrary_remember');
+    if (remembered) {
+      setUsername(remembered);
+      setRemember(true);
+    }
     setCaptcha(Math.random().toString(36).substring(2, 7).toUpperCase());
   }, []);
+
+  const refreshCaptcha = () => setCaptcha(Math.random().toString(36).substring(2, 7).toUpperCase());
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (captchaInput !== captcha) {
       setError("CAPTCHA code is incorrect. Please try again.");
-      // Regenerate CAPTCHA
-      setCaptcha(Math.random().toString(36).substring(2, 7).toUpperCase());
+      refreshCaptcha();
       setCaptchaInput("");
       return;
     }
-    // Simple hardcoded login logic
+
     if (username === "admin" && password === "admin123") {
-      onLogin(true, username); // Login as admin
+      if (remember) localStorage.setItem('edulibrary_remember', username); else localStorage.removeItem('edulibrary_remember');
+      onLogin(true, username);
       setError("");
     } else if (username === "user" && password === "user123") {
-      onLogin(false, username); // Login as regular user
+      if (remember) localStorage.setItem('edulibrary_remember', username); else localStorage.removeItem('edulibrary_remember');
+      onLogin(false, username);
       setError("");
     } else {
       setError("Invalid username or password. (Hint: user/user123 or admin/admin123)");
@@ -80,58 +90,68 @@ function LoginPage({ onLogin }) {
 
   return (
     <div className="login-page">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h1 className="login-form__title">📚 EduLibrary Login</h1>
-        <div className="login-form__group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            className="login-form__input"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+      <div className="login-card">
+        <div className="login-brand">
+          <div className="login-logo">📚</div>
+          <h2 className="login-brand__title">EduLibrary</h2>
+          <p className="login-brand__subtitle">Learn, share and collaborate — admins can upload resources</p>
         </div>
-        <div className="login-form__group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            className="login-form__input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        {/* CAPTCHA Section */}
-        <div className="login-form__group">
-          <label htmlFor="captcha">Enter CAPTCHA code:</label>
-          <div className="captcha-box" style={{
-            fontWeight: 'bold',
-            fontSize: '1.2rem',
-            letterSpacing: '0.2em',
-            background: '#e0e7ff',
-            padding: '0.5em 1em',
-            borderRadius: '0.5em',
-            marginBottom: '0.5em',
-            userSelect: 'none',
-            display: 'inline-block'
-          }}>{captcha}</div>
-          <input
-            type="text"
-            id="captcha"
-            className="login-form__input"
-            value={captchaInput}
-            onChange={(e) => setCaptchaInput(e.target.value.toUpperCase())}
-            autoComplete="off"
-            maxLength={5}
-            required
-          />
-        </div>
-        {error && <p className="login-form__error">{error}</p>}
-        <button type="submit" className="btn btn--login">
-          Login
-        </button>
-      </form>
+
+        <form className="login-form" onSubmit={handleSubmit} aria-label="Login form">
+          <div className="login-form__group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              className="login-form__input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter username"
+              required
+            />
+          </div>
+
+          <div className="login-form__group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              className="login-form__input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password"
+              required
+            />
+          </div>
+
+          <div className="login-form__group captcha-row">
+            <div className="captcha-box" aria-hidden>{captcha}</div>
+            <button type="button" className="btn btn--captcha-refresh" onClick={refreshCaptcha} title="Refresh CAPTCHA">↻</button>
+            <input
+              type="text"
+              id="captcha"
+              className="login-form__input captcha-input"
+              value={captchaInput}
+              onChange={(e) => setCaptchaInput(e.target.value.toUpperCase())}
+              autoComplete="off"
+              maxLength={5}
+              placeholder="Enter code"
+              required
+            />
+          </div>
+
+          <div className="login-form__group login-remember">
+            <label>
+              <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} /> Remember me
+            </label>
+          </div>
+
+          {error && <p className="login-form__error">{error}</p>}
+
+          <button type="submit" className="btn btn--login">Login</button>
+          <p className="login-help">Try <strong>admin/admin123</strong> or <strong>user/user123</strong></p>
+        </form>
+      </div>
     </div>
   );
 }
