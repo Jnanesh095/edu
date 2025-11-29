@@ -48,15 +48,30 @@ function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  // CAPTCHA state
+  const [captcha, setCaptcha] = useState("");
+  const [captchaInput, setCaptchaInput] = useState("");
+
+  // Generate a random 5-letter CAPTCHA code
+  useEffect(() => {
+    setCaptcha(Math.random().toString(36).substring(2, 7).toUpperCase());
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (captchaInput !== captcha) {
+      setError("CAPTCHA code is incorrect. Please try again.");
+      // Regenerate CAPTCHA
+      setCaptcha(Math.random().toString(36).substring(2, 7).toUpperCase());
+      setCaptchaInput("");
+      return;
+    }
     // Simple hardcoded login logic
     if (username === "admin" && password === "admin123") {
-      onLogin(true); // Login as admin
+      onLogin(true, username); // Login as admin
       setError("");
     } else if (username === "user" && password === "user123") {
-      onLogin(false); // Login as regular user
+      onLogin(false, username); // Login as regular user
       setError("");
     } else {
       setError("Invalid username or password. (Hint: user/user123 or admin/admin123)");
@@ -87,6 +102,31 @@ function LoginPage({ onLogin }) {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+        {/* CAPTCHA Section */}
+        <div className="login-form__group">
+          <label htmlFor="captcha">Enter CAPTCHA code:</label>
+          <div className="captcha-box" style={{
+            fontWeight: 'bold',
+            fontSize: '1.2rem',
+            letterSpacing: '0.2em',
+            background: '#e0e7ff',
+            padding: '0.5em 1em',
+            borderRadius: '0.5em',
+            marginBottom: '0.5em',
+            userSelect: 'none',
+            display: 'inline-block'
+          }}>{captcha}</div>
+          <input
+            type="text"
+            id="captcha"
+            className="login-form__input"
+            value={captchaInput}
+            onChange={(e) => setCaptchaInput(e.target.value.toUpperCase())}
+            autoComplete="off"
+            maxLength={5}
+            required
+          />
+        </div>
         {error && <p className="login-form__error">{error}</p>}
         <button type="submit" className="btn btn--login">
           Login
@@ -100,13 +140,23 @@ function LoginPage({ onLogin }) {
 // -----------------------------------------------------------------
 // 2. YOUR EXISTING APP, RENAMED TO "ResourceLibrary"
 // -----------------------------------------------------------------
-function ResourceLibrary({ isAdmin, onLogout, onToggleDarkMode, darkMode }) {
-  // All your existing state is preserved here
-  const [resources, setResources] = useState(initialResources);
+function ResourceLibrary({ isAdmin, onLogout, onToggleDarkMode, darkMode, userName }) {
+  // Initialize resources from localStorage, or use initialResources if not found
+  const [resources, setResources] = useState(() => {
+    const saved = localStorage.getItem('edulibraryResources');
+    return saved ? JSON.parse(saved) : initialResources;
+  });
   const [editingResource, setEditingResource] = useState(null);
   const [formData, setFormData] = useState({ title: "", description: "", category: "" });
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
+  const [showUploadPortal, setShowUploadPortal] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+
+  // Save resources to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('edulibraryResources', JSON.stringify(resources));
+  }, [resources]);
 
   // Handlers are all the same...
   const handleDelete = (id) => {
@@ -151,6 +201,25 @@ function ResourceLibrary({ isAdmin, onLogout, onToggleDarkMode, darkMode }) {
         return r;
       })
     );
+  };
+
+  const handleUploadResource = (uploadData) => {
+    const newResource = {
+      id: Math.max(...resources.map(r => r.id), 0) + 1,
+      title: uploadData.title,
+      description: uploadData.description,
+      category: uploadData.category,
+      uploadedBy: userName,
+      uploadDate: new Date().toISOString().split('T')[0],
+      downloads: 0,
+      reviews: [],
+      fileName: uploadData.fileName,
+      fileDataUrl: uploadData.fileDataUrl // Store base64 data URL
+    };
+    setResources([...resources, newResource]);
+    setShowUploadPortal(false);
+    setUploadSuccess(true);
+    setTimeout(() => setUploadSuccess(false), 3000);
   };
 
   const filteredResources = resources.filter((r) => {
@@ -230,6 +299,43 @@ function ResourceLibrary({ isAdmin, onLogout, onToggleDarkMode, darkMode }) {
         </div>
       )}
 
+      <div className="upload-section">
+        {isAdmin && (
+          <>
+            {uploadSuccess && (
+              <div className="upload-success">
+                ✅ Resource uploaded successfully! It's now available in the library.
+              </div>
+            )}
+            
+            <button 
+              className="btn btn--upload-toggle"
+              onClick={() => setShowUploadPortal(!showUploadPortal)}
+            >
+              📤 {showUploadPortal ? "Hide Upload" : "Upload Resource"}
+            </button>
+
+            {showUploadPortal && (
+              <UploadForm 
+                userName={userName}
+                onUpload={handleUploadResource}
+                onCancel={() => setShowUploadPortal(false)}
+              />
+            )}
+            
+            <div className="admin-info">
+              <p>Total resources in library: <strong>{resources.length}</strong></p>
+            </div>
+          </>
+        )}
+        
+        {!isAdmin && (
+          <div className="user-notice">
+            <p>📚 Available resources: <strong>{resources.length}</strong> | Resources shared by admins and instructors appear below</p>
+          </div>
+        )}
+      </div>
+
       <div className="resource-grid">
         {filteredResources.map((res) => (
           <ResourceCard
@@ -259,6 +365,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [userName, setUserName] = useState("");
 
   // Dark mode logic is now at the top level
   useEffect(() => {
@@ -269,9 +376,10 @@ export default function App() {
     }
   }, [darkMode]);
 
-  const handleLogin = (isUserAdmin) => {
+  const handleLogin = (isUserAdmin, username) => {
     setIsLoggedIn(true);
     setIsAdmin(isUserAdmin);
+    setUserName(username);
   };
 
   const handleLogout = () => {
@@ -291,6 +399,7 @@ export default function App() {
           onLogout={handleLogout}
           onToggleDarkMode={handleToggleDarkMode}
           darkMode={darkMode}
+          userName={userName}
         />
       ) : (
         <LoginPage onLogin={handleLogin} />
@@ -336,6 +445,22 @@ function ResourceCard({
     setUserName("");
     setComment("");
     setRating(5);
+  };
+
+  // Download handler for PDF
+  const handleDownloadFile = () => {
+    if (resource.fileName && resource.fileName.toLowerCase().endsWith('.pdf') && resource.fileDataUrl) {
+      const a = document.createElement('a');
+      a.href = resource.fileDataUrl;
+      a.download = resource.fileName;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+      }, 100);
+    } else {
+      alert('No PDF file available for download.');
+    }
   };
 
   return (
@@ -427,12 +552,18 @@ function ResourceCard({
 
       {/* Main Actions Bar */}
       <div className="resource-card__actions">
-        <button
-          className="btn btn--download"
-          onClick={() => onDownload(resource.id)}
-        >
-          ⬇️ Download
-        </button>
+        {resource.fileName && resource.fileName.toLowerCase().endsWith('.pdf') ? (
+          <button
+            className="btn btn--download"
+            onClick={handleDownloadFile}
+          >
+            ⬇️ Download PDF
+          </button>
+        ) : (
+          <button className="btn btn--download" disabled>
+            ⬇️ Download (PDF only)
+          </button>
+        )}
         {isAdmin && (
           <> {/* Fragment to group admin buttons */}
             <button
@@ -450,6 +581,110 @@ function ResourceCard({
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+// -----------------------------------------------------------------
+// 5. UploadForm COMPONENT
+// -----------------------------------------------------------------
+function UploadForm({ userName, onUpload, onCancel }) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("Computer Science");
+  const [file, setFile] = useState(null);
+  const [error, setError] = useState("");
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      if (selectedFile.size > 10 * 1024 * 1024) { // 10MB limit
+        setError("File size exceeds 10MB limit");
+        setFile(null);
+      } else {
+        setError("");
+        setFile(selectedFile);
+      }
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!title.trim() || !description.trim() || !category.trim() || !file) {
+      setError("Please fill in all fields and select a file.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64data = reader.result;
+      onUpload({
+        title,
+        description,
+        category,
+        fileName: file.name,
+        fileDataUrl: base64data
+      });
+      setTitle("");
+      setDescription("");
+      setCategory("Computer Science");
+      setFile(null);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div className="upload-form">
+      <h2 className="upload-form__title">📤 Upload New Resource</h2>
+      {error && <p className="upload-form__error">{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <div className="upload-form__group">
+          <label htmlFor="title">Title:</label>
+          <input
+            type="text"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
+        <div className="upload-form__group">
+          <label htmlFor="description">Description:</label>
+          <textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows="3"
+            required
+          />
+        </div>
+        <div className="upload-form__group">
+          <label htmlFor="category">Category:</label>
+          <input
+            type="text"
+            id="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            required
+          />
+        </div>
+        <div className="upload-form__group">
+          <label htmlFor="file">Select PDF file (max 10MB):</label>
+          <input
+            type="file"
+            id="file"
+            accept="application/pdf"
+            onChange={handleFileChange}
+            required
+          />
+        </div>
+        <div className="upload-form__actions">
+          <button type="submit" className="btn btn--upload">Upload Resource</button>
+          <button type="button" className="btn btn--cancel" onClick={onCancel}>
+            ❌ Cancel
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
