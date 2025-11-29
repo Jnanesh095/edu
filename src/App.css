@@ -84,6 +84,121 @@ html.dark .login-form__title {
   margin-bottom: 1rem;
 }
 
+/* --- Improved Login Card Styles --- */
+.login-page {
+  background: linear-gradient(135deg, #eef2ff 0%, #fff7ed 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 920px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2rem;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+  border: 1px solid rgba(15,23,42,0.04);
+}
+
+.login-brand {
+  padding: 1.25rem;
+}
+.login-logo {
+  font-size: 3rem;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: linear-gradient(90deg,#6366f1,#60a5fa);
+  color: #fff;
+  margin-bottom: 1rem;
+}
+.login-brand__title {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+  color: var(--color-indigo-700);
+}
+.login-brand__subtitle {
+  margin: 0;
+  color: var(--color-gray-600);
+  font-size: 0.95rem;
+}
+
+.login-form {
+  padding: 1rem 1.25rem;
+  background: transparent;
+  box-shadow: none;
+  max-width: 100%;
+}
+
+.captcha-row {
+  display: grid;
+  grid-template-columns: auto 40px 1fr;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.captcha-box {
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.18em;
+  background: linear-gradient(90deg,#eef2ff,#fef3c7);
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.btn--captcha-refresh {
+  background: #e2e8f0;
+  border: none;
+  border-radius: 0.4rem;
+  height: 40px;
+  cursor: pointer;
+}
+
+.captcha-input {
+  min-width: 0;
+}
+
+.login-remember {
+  margin-top: -0.25rem;
+}
+
+.btn--login {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  background: linear-gradient(90deg,#6366f1,#06b6d4);
+  color: #fff;
+  border: none;
+  border-radius: 0.6rem;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(99,102,241,0.12);
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.login-help {
+  margin-top: 0.75rem;
+  color: var(--color-gray-500);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+@media (max-width: 880px) {
+  .login-card { grid-template-columns: 1fr; }
+  .captcha-row { grid-template-columns: 1fr; }
+}
+
 
 /* --- Header --- */
 .app-header {
